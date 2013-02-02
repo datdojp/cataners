@@ -1,0 +1,98 @@
+<html>
+	<head>
+		<script src="js/GSAP/TimelineMax.min.js"></script>
+		<script src="js/GSAP/TweenMax.min.js"></script>
+		<script src="js/jQuery/jquery-1.9.0.min.js"></script>
+		<script src="js/obj/card.info.js" ></script>
+		<link rel="stylesheet" type="text/css" href="css/index.css"/>
+	</head>
+	<body align="center">
+		<button onclick="flipDownAll();">Flip down</button>
+		<button onclick="flipUpAll();">Flip up</button>
+		<div id="cardContainer" style="border:thin solid black; height: 2000px;position: absolute;">			
+		</div>
+
+		<script>
+			var $cardContainer = $("#cardContainer");			
+			var maxCardOnRow = 0;
+			for (var row = 0; row < cardData.length; row++) {
+				if (maxCardOnRow < cardData[row].length) {
+					maxCardOnRow = cardData[row].length
+				}
+				for (var col = 0; col < cardData[row].length; col++) {
+					var cardInfo = cardData[row][col];
+					var id = getCardId(row, col);					
+					$("#cardContainer").append(						
+						"<div id='" + id + "' style='opacity:0;position:absolute;' class='card'>" +
+							"<img src='" + cardInfo.imageUrl + "'" +
+								" width='" + CARD_WIDTH +"'" +
+								" height='" + CARD_HEIGHT + "'" +
+								" class='front' />" +
+							"<img src='images/back_card.png'" +
+								" width='" + CARD_WIDTH +"'" +
+								" height='" + CARD_HEIGHT + "'" +
+								" class='back' />" +										
+						"</div>"						
+					);
+					$("#" + id).css({width:CARD_WIDTH, height:CARD_HEIGHT});					
+				}
+			}			
+			var widthOfCardContainer = maxCardOnRow * CARD_WIDTH + 
+											(maxCardOnRow > 1 ? ((maxCardOnRow - 1) * CARD_MARGIN_X) : 0); 
+			$cardContainer.css({width:widthOfCardContainer});
+			
+			var tl = new TimelineMax();
+			for (var row = 0; row < cardData.length; row++) {
+				var rowWidth = cardData[row].length * CARD_WIDTH + 
+								(cardData[row].length > 1 ? ((cardData[row].length - 1) * CARD_MARGIN_X) : 0);;
+				for (var col = 0; col < cardData[row].length; col++) {
+					var id = getCardId(row, col);
+					var _left = (widthOfCardContainer - rowWidth) / 2 + col * CARD_WIDTH + col * CARD_MARGIN_X;
+					var _top = row * CARD_HEIGHT / 2 + row * CARD_MARGIN_Y;
+					var $card = $("#" + id);															
+					TweenMax.set($card, {left:_left});										
+					tl.add(
+						TweenMax.fromTo($card, CARD_ALL_APPEAR_EFFECT_SPEED, 
+							{left:_left, top:1000, opacity:0}, {left:_left, top:_top, opacity:1}),
+						(row == 0 && col == 0) ? "+=0" : ("-=" + (CARD_ALL_APPEAR_EFFECT_SPEED - CARD_ALL_APPEAR_EFFECT_GAP))
+					);										
+				}
+			}										
+			
+			var flipDownAllTL;
+			function flipDownAll() {
+				// if (flipDownAllTL == null) {
+					flipDownAllTL = new TimelineMax();
+					$(".card").each(function(i, obj) {
+						flipDownAllTL.add(
+								TweenMax.to(obj, CARD_FLIP_EFFECT_SPEED, {rotationY:180}),
+									i == 0 ? "+=0" : ("-=" + CARD_FLIP_EFFECT_SPEED)
+							);						
+					});
+				// } else {
+					// flipDownAllTL.restart();
+				// }
+			}
+			
+			var flipUpAllTL;
+			function flipUpAll() {
+				flipDownAllTL.reverse();
+				return;
+				// if (flipUpAllTL == null) {
+					flipDownAllTL = new TimelineMax();
+					$(".card").each(function(i, obj) {
+						flipDownAllTL.add(
+								TweenMax.to(obj, CARD_FLIP_EFFECT_SPEED, {rotationY:0}),
+									i == 0 ? "+=0" : ("-=" + CARD_FLIP_EFFECT_SPEED)
+							);						
+					});
+				// } else {
+					// flipUpAllTL.restart();
+				// }
+			}
+						
+		</script>
+
+	</body>
+
+</html>
