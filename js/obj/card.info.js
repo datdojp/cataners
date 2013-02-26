@@ -16,7 +16,7 @@ const CARD_MARGIN_Y = CARD_MARGIN * Math.sqrt(2)
 const CARD_ALL_APPEAR_EFFECT_SPEED = 0.5;
 const CARD_ALL_APPEAR_EFFECT_GAP = 0.05;
 const CARD_FLIP_EFFECT_SPEED = 0.3;
-const CARD_FLIP_EFFECT_SPPED = 0.3;
+const CARD_FLIP_EFFECT_GAP = 0.05;
 
 
 function getCardId(row, col) {
